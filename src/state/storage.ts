@@ -59,6 +59,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   strictMacrons: false,
   showMacronBar: true,
   macronShortcut: true,
+  showGrammarHints: false,
 };
 
 export function createInitialState(): PersistedState {

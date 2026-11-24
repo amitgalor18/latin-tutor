@@ -25,6 +25,7 @@ import { formatPronounCitation } from '../latin/pronouns';
 import { analyzeNounForm, analyzePronounForm, analyzeVerbForm } from '../latin/analyzer';
 import { PersistedState } from '../state/storage';
 import { generateIdentifyQuestion, IdentifyQuestion, VocabularyPool } from '../state/selector';
+import { GrammarHintBadge } from '../components/GrammarHintBadge';
 
 interface IdentifyDrillProps {
   pool: VocabularyPool;
@@ -260,17 +261,35 @@ export const IdentifyDrill: React.FC<IdentifyDrillProps> = ({
       ) : (
         <div className="rounded-2xl border border-[#E7DFD3] bg-white p-6 shadow-xs sm:p-8">
           <div className="flex items-start justify-between gap-3">
-            <span className="rounded-full bg-[#F1EAE0] px-2.5 py-0.5 text-xs font-medium text-[#665E54]">
-              {question.kind === 'identify_noun'
-                ? `Identify Noun Form · Decl. ${question.noun.declension}`
-                : question.kind === 'identify_pronoun'
-                  ? `Identify Pronoun · ${PRONOUN_GROUP_LABELS[question.pronoun.group].split(' (')[0]}`
-                  : `Identify Verb Form · ${
-                      question.verb.conjugation === 'irregular'
-                        ? 'Irregular'
-                        : `${question.verb.conjugation} Conj.`
-                    }${question.verb.deponent ? ' · Deponent' : ''}`}
-            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-[#F1EAE0] px-2.5 py-0.5 text-xs font-medium text-[#665E54]">
+                {question.kind === 'identify_noun'
+                  ? 'Identify Noun Form'
+                  : question.kind === 'identify_pronoun'
+                    ? 'Identify Pronoun'
+                    : 'Identify Verb Form'}
+              </span>
+              <GrammarHintBadge
+                hint={
+                  question.kind === 'identify_noun'
+                    ? `Declension ${question.noun.declension}${question.noun.subtype === '3istem' ? ' (i-stem)' : ''}`
+                    : question.kind === 'identify_pronoun'
+                      ? PRONOUN_GROUP_LABELS[question.pronoun.group].split(' (')[0]
+                      : `${
+                          question.verb.conjugation === 'irregular'
+                            ? 'Irregular'
+                            : `${question.verb.conjugation} Conj.`
+                        }${question.verb.deponent ? ' · Deponent' : ''}`
+                }
+                alwaysShow={state.settings.showGrammarHints}
+                alwaysVisibleNote={
+                  question.kind === 'identify_noun' && question.noun.subtype === '3istem'
+                    ? '3rd Decl. i-stem'
+                    : undefined
+                }
+                resetKey={question.id}
+              />
+            </div>
             <button
               type="button"
               onClick={() => onTogglePinWord(question.wordId)}

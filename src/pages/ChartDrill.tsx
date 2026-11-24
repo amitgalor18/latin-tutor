@@ -27,6 +27,7 @@ import {
   verbSlotKey,
   VocabularyPool,
 } from '../state/selector';
+import { GrammarHintBadge } from '../components/GrammarHintBadge';
 
 interface ChartDrillProps {
   pool: VocabularyPool;
@@ -341,21 +342,42 @@ export const ChartDrill: React.FC<ChartDrillProps> = ({
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[#F1EAE0] px-2.5 py-0.5 text-xs font-medium text-[#665E54]">
-                  {target.kind === 'noun_chart' && target.noun
-                    ? `Declension ${target.noun.declension} Noun${target.noun.subtype === '3istem' ? ' (i-stem)' : ''}`
-                    : target.kind === 'pronoun_chart' && target.pronoun
-                      ? `Pronoun · ${PRONOUN_GROUP_LABELS[target.pronoun.group].split(' (')[0]}${
-                          !target.pronoun.genderless
-                            ? ` · ${NUMBER_LABELS[target.pronounNumber ?? 'sg']}`
-                            : ''
-                        }`
-                      : target.verb && target.tense && target.mood && target.voice
-                        ? `${TENSE_LABELS[target.tense]} ${MOOD_LABELS[target.mood]} ${
-                            target.verb.deponent ? 'Active (Deponent)' : VOICE_LABELS[target.voice]
-                          }`
-                        : 'Paradigm Chart'}
-                </span>
+                {target.kind === 'noun_chart' && target.noun && (
+                  <GrammarHintBadge
+                    hint={`Declension ${target.noun.declension} Noun${target.noun.subtype === '3istem' ? ' (i-stem)' : ''}`}
+                    alwaysShow={state.settings.showGrammarHints}
+                    alwaysVisibleNote={
+                      target.noun.subtype === '3istem' ? '3rd Decl. i-stem' : undefined
+                    }
+                    resetKey={target.wordId}
+                  />
+                )}
+
+                {target.kind === 'verb_chart' && target.verb && target.tense && target.mood && target.voice && (
+                  <>
+                    <span className="rounded-full bg-[#F1EAE0] px-2.5 py-0.5 text-xs font-medium text-[#231F1B]">
+                      {TENSE_LABELS[target.tense]} {MOOD_LABELS[target.mood]}{' '}
+                      {target.verb.deponent ? 'Active (Deponent)' : VOICE_LABELS[target.voice]}
+                    </span>
+                    <GrammarHintBadge
+                      hint={`${
+                        target.verb.conjugation === 'irregular'
+                          ? 'Irregular'
+                          : `${target.verb.conjugation} Conj.`
+                      } Verb${target.verb.deponent ? ' · Deponent' : ''}`}
+                      alwaysShow={state.settings.showGrammarHints}
+                      resetKey={`${target.wordId}_${target.tense}_${target.mood}_${target.voice}`}
+                    />
+                  </>
+                )}
+
+                {target.kind === 'pronoun_chart' && target.pronoun && (
+                  <GrammarHintBadge
+                    hint={`Pronoun · ${PRONOUN_GROUP_LABELS[target.pronoun.group].split(' (')[0]}`}
+                    alwaysShow={state.settings.showGrammarHints}
+                    resetKey={`${target.wordId}_${target.pronounNumber ?? 'all'}`}
+                  />
+                )}
 
                 {target.kind === 'pronoun_chart' && target.pronoun && !target.pronoun.genderless && (
                   <div className="inline-flex rounded-lg border border-[#E7DFD3] bg-[#FAF7F2] p-0.5 text-xs">

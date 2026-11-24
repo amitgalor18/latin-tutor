@@ -56,6 +56,7 @@ export interface SingleFormQuestion {
   citation: string;
   meaning: string;
   tag: string;
+  isIStem?: boolean;
   prompt: string;
   expected: FormEntry;
   hint?: string;
@@ -285,6 +286,7 @@ export function generateSingleFormQuestion(
               citation: formatNounCitation(noun),
               meaning: noun.meaning,
               tag: `${noun.declension}${noun.declension === '1' ? 'st' : noun.declension === '2' ? 'nd' : noun.declension === '3' ? 'rd' : 'th'} Decl. Noun${noun.subtype === '3istem' ? ' (i-stem)' : ''}`,
+              isIStem: noun.subtype === '3istem',
               prompt: `${CASE_LABELS[c]} ${NUMBER_LABELS[num]}`,
               expected: form,
             },

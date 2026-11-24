@@ -223,4 +223,5 @@ export interface AppSettings {
   strictMacrons: boolean;
   showMacronBar: boolean;
   macronShortcut: boolean; // e.g. typing a- converts to ā
+  showGrammarHints: boolean; // show declension/conjugation chips by default vs behind (i) icon
 }

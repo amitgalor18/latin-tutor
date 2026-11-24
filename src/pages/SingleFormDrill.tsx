@@ -19,6 +19,7 @@ import {
   VocabularyPool,
 } from '../state/selector';
 import { MacronInput } from '../components/MacronInput';
+import { GrammarHintBadge } from '../components/GrammarHintBadge';
 
 interface SingleFormDrillProps {
   mode: 'prompt' | 'agree_adverb' | 'weak_spots';
@@ -351,9 +352,12 @@ export const SingleFormDrill: React.FC<SingleFormDrillProps> = ({
         <div className="rounded-2xl border border-[#E7DFD3] bg-white p-6 shadow-xs sm:p-8">
           <div className="flex items-start justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-[#F1EAE0] px-2.5 py-0.5 text-xs font-medium text-[#665E54]">
-                {question.tag}
-              </span>
+              <GrammarHintBadge
+                hint={question.tag}
+                alwaysShow={state.settings.showGrammarHints}
+                alwaysVisibleNote={question.isIStem ? '3rd Decl. i-stem' : undefined}
+                resetKey={question.id}
+              />
               {pastMistake && !pastMistake.resolved && (
                 <span className="rounded-full bg-[#FBECE8] px-2.5 py-0.5 text-xs font-medium text-[#B84A2E]">
                   Missed {pastMistake.missCount}× before

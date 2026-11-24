@@ -616,13 +616,19 @@ export const CurriculumPage: React.FC<CurriculumPageProps> = ({
         </section>
       </div>
 
-      {/* Grading & Macron Preferences */}
+      {/* Grading, Display & Macron Preferences */}
       <section className="rounded-2xl border border-[#E7DFD3] bg-white p-6">
         <div className="flex items-center gap-2">
           <Sliders className="h-4 w-4 text-[#B84A2E]" />
-          <h2 className="text-lg font-semibold text-[#231F1B]">Macrons & Typing Settings</h2>
+          <h2 className="text-lg font-semibold text-[#231F1B]">Display, Macrons & Typing Settings</h2>
         </div>
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {toggleSwitch(
+            settings.showGrammarHints,
+            () => onUpdateSettings({ ...settings, showGrammarHints: !settings.showGrammarHints }),
+            'Show Declension & Conjugation Hints',
+            'When off, hides grammar class behind an (i) icon (3rd decl. i-stems still show)'
+          )}
           {toggleSwitch(
             settings.strictMacrons,
             () => onUpdateSettings({ ...settings, strictMacrons: !settings.strictMacrons }),
